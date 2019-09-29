@@ -1,0 +1,27 @@
+{
+  "name": "nodejs-websocket",
+  "version": "1.0.0",
+  "description": "WebSocket experiment in Node.js server",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/forhad-h/nodejs-websocket.git"
+  },
+  "keywords": [
+    "nodejs",
+    "websocket"
+  ],
+  "author": "Forhad Hosain",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/forhad-h/nodejs-websocket/issues"
+  },
+  "homepage": "https://github.com/forhad-h/nodejs-websocket#readme",
+  "dependencies": {
+    "node-static": "^0.7.11",
+    "uuid": "^3.3.3"
+  }
+}
