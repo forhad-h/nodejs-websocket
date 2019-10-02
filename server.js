@@ -1,9 +1,11 @@
 const http = require('http')
-const static = require('node-static')
+const nodeStatic = require('node-static')
 const crypto = require('crypto')
-const uuidV4 = require('uuid/v4')
 
-const file = new static.Server('./')
+const constructReply = require('./constructReply')
+const parseMessage = require('./parseMessage')
+
+const file = new nodeStatic.Server('./')
 const server = http.createServer((req, res) => {
   // serve static files i.e html
   req.addListener('end', () => file.serve(req, res)).resume()
@@ -44,21 +46,32 @@ server.on('upgrade', (req, socket) => {
     responseHeaders.push(`Sec-WebSocket-Protocol: json`)
   }
 
-  /* 
+  /*
    Write the response back to the client socket
 
    Note: Additional two newlines make sure end of the header data so that
           it doesn't continue to wait for more header data
    */
   socket.write(responseHeaders.join('\r\n') + '\r\n\r\n')
+
+  socket.on('data', buffer => {
+    const message = parseMessage(buffer)
+
+    if (message) {
+      console.log(message)
+      socket.write(constructReply({ message: 'Hello from the server!' }))
+    } else if (message === null) {
+      console.log('WebSocket connection closed by the client.')
+    }
+  })
 })
+
+server.listen(port, () =>
+  console.log(`🚀  Server running at http://localhost:${port}`)
+)
 
 const generateAcceptValue = acceptKey =>
   crypto
     .createHash('sha1')
     .update(acceptKey + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', 'binary')
     .digest('base64')
-
-server.listen(port, () =>
-  console.log(`🚀  Server running at http://localhost:${port}`)
-)
